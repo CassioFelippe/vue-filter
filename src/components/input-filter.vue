@@ -157,19 +157,19 @@
         } else {
           filters[current.key] = value;
         }
-
-        return filters; // TODO check if it's necessary or if it's possible to set the value by reference
       },
 
       addFilter() {
         if (this.filter.key && this.filter.value) {
+          const type = this.fields.filter(f => f.key === this.filter.key)[0].type;
+          
           let current = {
             key: this.filter.key,
             operator: this.filter.operator,
-            value: this.fields.filter(f => f.key === this.filter.key)[0].type === 'number' ? parseInt(this.filter.value) : this.filter.value
+            value: type === 'number' ? parseInt(this.filter.value) : this.filter.value
           }
 
-          this.filters = this.addCriteria(this.filters, current);
+          this.addCriteria(this.filters, current);
         }
 
         this.request(this.filters);
@@ -208,7 +208,7 @@
     {
       label: App.t('operators.$ne'),
       value: '$ne',
-      types: ['text', 'number', 'date']
+      types: ['text', 'number']
     },
     {
       label: App.t('operators.$regex'),
