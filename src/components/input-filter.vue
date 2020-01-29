@@ -1,79 +1,101 @@
 <template>
-  <div>
-    <b-input-group :size="mobile('sm', 'lg')">
-      <template v-if="mobile(true, false)" v-slot:prepend>
-        <b-input-group-text>{{App.t('filtrar')}}</b-input-group-text>
-      </template>
+  <b-container>
+    <b-row align-h="between">
+      <b-col sm="7" md="7" lg="8">
+        <b-input-group :size="mobile('sm', 'lg')">
+          <template v-if="mobile(true, false)" v-slot:prepend>
+            <b-input-group-text>{{App.t('filtrar')}}</b-input-group-text>
+          </template>
 
-      <b-form-select id="filter-attribute" :options="fields" v-model="filter.key" text-field="label" value-field="key" :searchable="false">
-        <template v-slot:first>
-          <option :value="''" />
-        </template>
-      </b-form-select>
+          <b-form-select id="filter-attribute" :options="fields" v-model="filter.key" text-field="label" value-field="key" :searchable="false">
+            <template v-slot:first>
+              <option :value="''" />
+            </template>
+          </b-form-select>
 
-      <b-form-select id="filter-operator" :options="operators" v-model="filter.operator" text-field="label" :searchable="false" />
+          <b-form-select id="filter-operator" :options="operators" v-model="filter.operator" text-field="label" :searchable="false" />
 
-      <b-form-select
-        v-if="selected.values"
-        id="filter-value"
-        :options="selected.values"
-        v-model="filter.value"
-        :searchable="false"
-        title="Selecione o valor que deseja filtrar"
-      >
-        <template v-slot:first>
-          <option :value="{}" />
-        </template>
-      </b-form-select>
+          <b-form-select
+            v-if="selected.values"
+            id="filter-value"
+            :options="selected.values"
+            v-model="filter.value"
+            :searchable="false"
+            title="Selecione o valor que deseja filtrar"
+          >
+            <template v-slot:first>
+              <option :value="{}" />
+            </template>
+          </b-form-select>
 
-      <the-mask
-        v-else-if="filter.key && selected.mask"
-        id="filter-value"
-        pattern="\d*"
-        @keypress.enter.native="addFilter()"
-        v-model="filter.value"
-        :mask="selected.mask"
-        :placeholder="selected.mask ? selected.mask.replace(/#/g, '_') : ''"
-        class="form-control"
-      />
-      
-      <b-form-input
-        v-else
-        id="filter-value"
-        :pattern="selected.pattern"
-        :type="selected.type"
-        @keypress.enter="addFilter()"
-        v-model="filter.value"
-        title="Digite o valor que deseja filtrar"
-      />
-      
-      <template v-slot:append>
-        <b-button id="filter-search" squared @click="addFilter()" variant="outline-primary" :title="readyToFilter ? 'Filtrar' : 'Atualizar'">
-          <font-awesome-icon :icon="readyToFilter ? 'filter' : 'sync'"/>
-        </b-button>
-        <b-button id="filter-clear" squared @click="clearFilters()" variant="outline-danger" title="Limpar Filtro">
-          <font-awesome-icon icon="trash"/>
-        </b-button>
-      </template>
-    </b-input-group>
-    
-    <b-col>&nbsp;</b-col>
+          <the-mask
+            v-else-if="filter.key && selected.mask"
+            id="filter-value"
+            pattern="\d*"
+            @keypress.enter.native="addFilter()"
+            v-model="filter.value"
+            :mask="selected.mask"
+            :placeholder="selected.mask ? selected.mask.replace(/#/g, '_') : ''"
+            class="form-control"
+          />
+          
+          <b-form-input
+            v-else
+            id="filter-value"
+            :pattern="selected.pattern"
+            :type="selected.type"
+            @keypress.enter="addFilter()"
+            v-model="filter.value"
+            title="Digite o valor que deseja filtrar"
+          />
+          
+          <template v-slot:append>
+            <b-button id="filter-search" squared @click="addFilter()" variant="outline-primary" :title="readyToFilter ? 'Filtrar' : 'Atualizar'">
+              <font-awesome-icon :icon="readyToFilter ? 'filter' : 'sync'"/>
+            </b-button>
+            <b-button id="filter-clear" squared @click="clearFilters()" variant="outline-danger" title="Limpar Filtro">
+              <font-awesome-icon icon="trash"/>
+            </b-button>
+          </template>
+        </b-input-group>
+        
+        <b-col>&nbsp;</b-col>
 
-    <b-input-group :size="mobile('sm', 'lg')" v-for="(values, key, index) in filters" :key="key" class="applied-filter">
-      <b-input-group :size="mobile('sm', 'lg')" v-for="(operator, i) in Object.keys(values).filter((k) => k !== '$options')" :key="i">
-        <span :class="'form-control applied-key'+index">{{App.t(key)}}</span>
-        <span :class="'form-control applied-operator'+index">{{App.t('operators.'+operator)}}</span>
-        <span :class="'form-control applied-value'+index">{{values[operator]}}</span>
-        <b-button cols="1" @click="removeFilter(key)" :class="'btn-sm remove-applied'+index" squared variant="outline-danger" title="Remover Filtro">
-          <font-awesome-icon icon="minus"/>
-        </b-button>
-      </b-input-group>
-    </b-input-group>
-  </div>
+        <b-input-group :size="mobile('sm', 'lg')" v-for="(values, key, index) in filters" :key="key" class="applied-filter">
+          <b-input-group :size="mobile('sm', 'lg')" v-for="(operator, i) in Object.keys(values).filter((k) => k !== '$options')" :key="i">
+            <span :class="'form-control applied-key'+index">{{App.t(key)}}</span>
+            <span :class="'form-control applied-operator'+index">{{App.t('operators.'+operator)}}</span>
+            <span :class="'form-control applied-value'+index">{{values[operator]}}</span>
+            <b-button cols="1" @click="removeFilter(key)" :class="'btn-sm remove-applied'+index" squared variant="outline-danger" title="Remover Filtro">
+              <font-awesome-icon icon="minus"/>
+            </b-button>
+          </b-input-group>
+        </b-input-group>
+      </b-col>
+
+      <b-col sm="5" md="5" lg="4">
+        <b-pagination
+          align="right"
+          class="custom-pagination"
+          :size="mobile('sm', 'md')"
+          v-model="page"
+          :total-rows="meta"
+          :per-page="perPage"
+          aria-controls="my-table"
+          v-b-popover.hover.bottom="'Navegue pelas páginas disponíveis'"
+        />
+      </b-col>
+
+      <b-col cols="12">&nbsp;</b-col>
+
+      <slot />
+    </b-row>
+  </b-container>
 </template>
 
 <script>
   import * as App from '@/App'
+  import Vue from 'vue'
 
   export default {
     name: 'input-filter',
@@ -84,10 +106,11 @@
           return [];
         }
       },
-      filters: {},
-      model: {},
-      prefix: {},
-      service: {}
+      filters: Object,
+      model: Array,
+      prefix: String,
+      service: Object,
+      meta: Number
     },
 
     data() {
@@ -101,16 +124,10 @@
         operators: this.updateOperators(),
         App: App,
         mobile: function(primary, secondary) {
-          let userAgent = navigator.userAgent,
-          isMobile = userAgent.match(/Android/i)
-            || userAgent.match(/webOS/i)
-            || userAgent.match(/iPhone/i)
-            || userAgent.match(/iPad/i)
-            || userAgent.match(/iPod/i)
-            || userAgent.match(/BlackBerry/i)
-            || userAgent.match(/Windows Phone/i);
-          return isMobile ? secondary : primary;
-        }
+          return App.mobile() ? secondary : primary;
+        },
+        page: 1,
+        perPage: 10
       };
     },
     
@@ -129,6 +146,10 @@
       'filter.key': function(value) {
         let field = this.fields.filter(f => f.key === value)[0], type = field ? field.type : null;
         this.operators = this.updateOperators(type);
+      },
+
+      page: function(value) {
+        this.request(this.filters);
       }
     },
 
@@ -140,8 +161,9 @@
         // clean fields of filter selection
         this.filter = {type: 'text', operator: '$eq'};
 
-        this.service.post(`${this.prefix}/filter`, filters).then(response => {
-          this.$emit('update:model', response.data);
+        this.service.post(`${this.prefix}/filter?page=${this.page}&perPage=${this.perPage}`, filters).then(response => {
+          this.$emit('update:model', response.data.records);
+          this.$emit('update:meta', response.data.meta);
         });
       },
 

@@ -4,4 +4,6 @@
   }
 
   export function t() {}
+  
+  export function mobile() {}
 </script>
