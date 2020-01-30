@@ -82,7 +82,7 @@
           :total-rows="meta"
           :per-page="perPage"
           aria-controls="my-table"
-          v-b-popover.hover.bottom="'Navegue pelas páginas disponíveis'"
+          title="Navegue pelas páginas disponíveis"
         />
       </b-col>
 
@@ -95,7 +95,6 @@
 
 <script>
   import * as App from '@/App'
-  import Vue from 'vue'
 
   export default {
     name: 'input-filter',
@@ -109,8 +108,7 @@
       filters: Object,
       model: Array,
       prefix: String,
-      service: Object,
-      meta: Number
+      service: Object
     },
 
     data() {
@@ -127,7 +125,8 @@
           return App.mobile() ? secondary : primary;
         },
         page: 1,
-        perPage: 10
+        perPage: 10,
+        meta: this.model.length
       };
     },
     
@@ -148,7 +147,7 @@
         this.operators = this.updateOperators(type);
       },
 
-      page: function(value) {
+      page: function() {
         this.request(this.filters);
       }
     },
@@ -163,7 +162,7 @@
 
         this.service.post(`${this.prefix}/filter?page=${this.page}&perPage=${this.perPage}`, filters).then(response => {
           this.$emit('update:model', response.data.records);
-          this.$emit('update:meta', response.data.meta);
+          this.meta = response.data.meta;
         });
       },
 
@@ -218,7 +217,9 @@
       }
     },
 
-    mounted() {}
+    mounted() {
+      this.request(this.filters);
+    }
   };
 
   const list = [
