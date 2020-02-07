@@ -218,7 +218,7 @@
     },
 
     mounted() {
-      this.request(this.filters);
+      // this.request(this.filters);
     }
   };
 
