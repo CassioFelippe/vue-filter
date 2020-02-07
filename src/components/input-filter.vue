@@ -73,7 +73,7 @@
         </b-input-group>
       </b-col>
 
-      <b-col sm="5" md="5" lg="4">
+      <b-col sm="5" md="5" lg="4" v-if="JSON.stringify(filters).length > 2">
         <b-pagination
           align="right"
           class="custom-pagination"
