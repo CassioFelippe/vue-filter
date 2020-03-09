@@ -39,6 +39,12 @@
             class="form-control"
           />
           
+          <b-form-select v-else-if="selected.type === 'boolean'" id="filter-value" v-model="filter.value" title="Selecione o valor">
+            <option :value="{}" />
+            <option :value="true">Sim</option>
+            <option :value="false">Não</option>
+          </b-form-select>
+          
           <b-form-input
             v-else
             id="filter-value"
@@ -181,7 +187,8 @@
       },
 
       addFilter() {
-        if (this.filter.key && this.filter.value) {
+        // verifies null and undefined because it can be false when type is boolean
+        if (this.filter.key && this.filter.value !== null && this.filter.value !== undefined) {
           const type = this.fields.filter(f => f.key === this.filter.key)[0].type;
           
           let current = {
@@ -226,7 +233,7 @@
     {
       label: App.t('operators.$eq'),
       value: '$eq',
-      types: ['text', 'number', 'date']
+      types: ['text', 'number', 'date', 'boolean']
     },
     {
       label: App.t('operators.$ne'),
